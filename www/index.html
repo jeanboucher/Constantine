@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171717">
+<title>Constantine</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#171717;color:white;font-family:Arial,sans-serif;min-height:100vh}
+header{padding:14px 12px;text-align:center}
+h1{margin:0;font-size:24px}
+#info{font-size:14px;color:#bbb;margin-top:7px}
+main{max-width:600px;margin:auto;padding:8px 16px 120px;text-align:center}
+#home{min-height:100vh;padding:8px 4px 30px}
+#home h1{font-size:32px;margin:12px 0 4px}
+.subtitle{font-size:20px;font-weight:bold;margin:0 0 22px}
+.section{background:#242424;border:1px solid #444;border-radius:14px;padding:15px;margin:12px 0;text-align:left}
+.section h2{font-size:18px;margin:0 0 10px}
+.section h3{font-size:16px;margin:12px 0 6px}
+.section ul{margin:6px 0 0;padding-left:22px}
+.section li{margin:7px 0;line-height:1.35}
+.start{width:100%;min-height:54px;margin-top:18px;font-size:18px}
+#game{display:none}
+#cardArea{touch-action:pan-y;user-select:none;min-height:55vh;display:flex;align-items:center;justify-content:center;position:relative}
+#card{max-width:100%;max-height:60vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 28px #000;display:block;transition:transform .35s ease,opacity .35s ease}
+#hint{color:#aaa;font-size:13px;margin:8px 0 14px}
+.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+button{min-height:44px;border:0;border-radius:10px;padding:10px 16px;font-size:15px;font-weight:bold;background:#eee;color:#111}
+button.dark{background:#383838;color:white}
+#event{display:none;margin:12px auto;padding:11px;border:1px solid #555;border-radius:10px;background:#242424;font-size:14px}
+.legend-icons{display:block;width:100%;max-width:100%;height:auto;margin:8px auto 0;border-radius:8px}
+
+</style>
+</head>
+<body>
+
+<div id="home">
+<main>
+<h1>CONSTANTINE</h1>
+<div class="subtitle">🎮 Mode Solo</div>
+
+<div class="section">
+<h2>Mise en place</h2>
+<h3>Vous</h3>
+<ul>
+<li>7 Vertus</li>
+<li>3 pièces</li>
+<li>Tirez 5 cartes Bâtiments</li>
+<li>Gardez-en 3 et défaussez les 2 autres</li>
+</ul>
+<h3>Robot</h3>
+<ul>
+<li>7 Vertus</li>
+<li>Pas d'argent</li>
+<li>Pas de cartes Bâtiments</li>
+</ul>
+<h3>Cathédrale</h3>
+<ul><li>5 récompenses</li></ul>
+</div>
+
+<div class="section">
+<h2>Début et fin de partie</h2>
+<ul>
+<li>Vous jouez en premier.</li>
+<li>La partie s'arrête après 12 constructions.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>🤖 Tour du Robot</h2>
+<ul>
+<li>Lorsque le Robot joue, placez 1 de ses ouvriers sur le lieu indiqué et réalisez les actions listées.</li>
+<li>Si le Robot n'a plus d'ouvriers au début du tour, récupérez tous ses ouvriers, sauf ceux de la Maison des corporations et du Marché noir, y compris les capturés et emprisonnés.</li>
+</ul>
+<h3>Icônes</h3>
+<img class="legend-icons" src="images/icones.png" alt="Légende des icônes Constantine">
+</div>
+
+<div class="section">
+<h2>👥 2 joueurs contre Constantine</h2>
+
+<h3>Joueur 1</h3>
+<ul>
+<li>7 Vertus</li>
+<li>3 pièces</li>
+</ul>
+
+<h3>Joueur 2</h3>
+<ul>
+<li>7 Vertus</li>
+<li>4 pièces</li>
+</ul>
+
+<h3>Robot</h3>
+<ul>
+<li>7 Vertus</li>
+<li>Pas d'argent</li>
+<li>Pas de carte Bâtiment</li>
+</ul>
+
+<ul>
+<li>7 récompenses à la Cathédrale</li>
+<li>La partie s'arrête après 16 constructions.</li>
+</ul>
+
+<h3>Tour du Robot</h3>
+<ul>
+<li>Révélez une carte Planification, placez 1 de ses ouvriers sur le lieu indiqué par la carte et réalisez les actions listées.</li>
+<li>Si le Robot n'a plus d'ouvrier au début du tour, récupérez tous ses ouvriers (sauf ceux de la Maison des corporations et du Marché noir, y compris les capturés et emprisonnés).</li>
+</ul>
+
+<h3>Capturer</h3>
+<ul>
+<li>Quand une carte Planification Hôtel de ville est révélée, le Robot capture les ouvriers des deux joueurs humains pour une seule action.</li>
+<li>Par exemple, il capture 4 ouvriers du joueur 1 dans les mines et 3 ouvriers du joueur 2 dans la carrière pour une action.</li>
+</ul>
+</div>
+
+<button id="start" class="start">▶ COMMENCER LA PARTIE</button>
+</main>
+</div>
+
+<div id="game">
+<header><h1>Constantine</h1><div id="info">Paquet de base : 0 / 20 · Future : 10 · Défausse future : 0</div></header>
+<main>
+<div id="cardArea"><img id="card" src="images/01.png" alt="Carte"></div>
+<div id="hint">← Swipe gauche ou droite pour tirer la prochaine carte →</div>
+<div id="event"></div>
+<div class="controls">
+<button id="prev" class="dark">◀ Carte précédente</button>
+<button id="next">Carte suivante ▶</button>
+</div>
+
+</main>
+</div>
+
+<script>
+const base=[
+['images/01.png','Marché noir'],['images/02.png','Marché noir'],
+['images/03.png','Atelier'],['images/04.png','Atelier'],
+['images/05.png','Entrepôt royal'],['images/06.png','Entrepôt royal'],['images/07.png','Entrepôt royal'],['images/08.png','Entrepôt royal'],
+['images/09.png','Maison des corporations'],['images/10.png','Maison des corporations'],
+['images/11.png','Hôtel de ville'],['images/12.png','Hôtel de ville'],['images/13.png','Hôtel de ville'],['images/14.png','Hôtel de ville'],['images/15.png','Hôtel de ville'],
+['images/16.png','Bâtiment des impôts'],['images/17.png','Bâtiment des impôts'],
+['images/18.png','Corps de garde'],['images/19.png','Corps de garde'],['images/20.png','Corps de garde']
+];
+const future=[
+['images/21.png','Maison des corporations'],['images/22.png','Maison des corporations'],['images/23.png','Maison des corporations'],['images/24.png','Maison des corporations'],['images/25.png','Maison des corporations'],
+['images/26.png','Atelier'],['images/27.png','Entrepôt royal'],['images/28.png','Marché noir'],['images/29.png','Corps de garde'],['images/30.png','Hôtel de ville']
+];
+const img=document.getElementById('card'),area=document.getElementById('cardArea'),info=document.getElementById('info'),event=document.getElementById('event');
+const home=document.getElementById('home'),game=document.getElementById('game');
+let deck=[],pos=0,futureDeck=[],discard=[],startX=0,startY=0,locked=false;
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function reset(){deck=shuffle(base);pos=0;futureDeck=shuffle(future);discard=[];event.style.display='none';showCurrent();update()}
+function showCurrent(){if(deck.length&&pos<deck.length){img.src=deck[pos][0];img.alt='Carte Constantine'}}
+function update(){info.textContent=`Paquet de base : ${pos} / ${deck.length} · Future : ${futureDeck.length} · Défausse future : ${discard.length}`}
+function draw(){
+if(locked)return;
+if(pos>=deck.length){
+if(discard.length){deck=shuffle(deck.concat(discard));discard=[];pos=0}
+else{event.style.display='none';return}
+}
+locked=true;let type=deck[pos][1];pos++;img.style.opacity='.25';img.style.transform='translateX(12px) scale(.98)';
+setTimeout(()=>{img.style.opacity='1';img.style.transform='translateX(0) scale(1)';if(pos<deck.length)showCurrent();
+if(type==='Atelier'||type==='Marché noir'){if(futureDeck.length){let f=futureDeck.pop();discard.push(f)}}
+event.style.display='none';update();locked=false},220)
+}
+function swipe(dx){if(Math.abs(dx)>55)draw()}
+document.getElementById('start').onclick=function(){home.style.display='none';game.style.display='block';reset()}
+area.addEventListener('pointerdown',e=>{startX=e.clientX;startY=e.clientY});
+area.addEventListener('pointerup',e=>{swipe(e.clientX-startX)});
+document.getElementById('next').onclick=draw;
+document.getElementById('prev').onclick=function(){if(pos>1){pos-=2;event.style.display='none';draw()}};
+
+</script>
+</body>
+</html>
